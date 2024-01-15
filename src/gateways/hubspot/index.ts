@@ -1,9 +1,9 @@
 import { Client } from '@hubspot/api-client'
+import { BatchInputSimplePublicObjectInputForCreate } from '@hubspot/api-client/lib/codegen/crm/contacts';
 
 import { env } from '../../config/env'
 import { IHubspotGateway } from '../../domain/gateways/hubspot/HubspotGateway.interface';
 import { IAwsGateway } from '../../domain/gateways/aws/AwsGateway.interface';
-import { BatchInputSimplePublicObjectInputForCreate } from '@hubspot/api-client/lib/codegen/crm/contacts';
 
 export class HubspotGateway implements IHubspotGateway {
   constructor(private readonly awsGateway: IAwsGateway) { }
