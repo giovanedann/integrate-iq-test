@@ -1,16 +1,17 @@
 import express from 'express'
-import dotenv from 'dotenv'
+import { env } from './config/env'
+import { AwsGateway } from './gateways/aws'
 
 const app = express()
 
-dotenv.config()
+const awsGateway = new AwsGateway();
 
-const port = process.env.PORT
+app.get('/', async (_req, res) => {
+  const contacts = await awsGateway.getContacts();
 
-app.get('/', (_req, res) => {
-  res.send('Setup')
+  return res.status(200).json(contacts)
 })
 
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port} 🚀`)
+app.listen(env.port, () => {
+  console.log(`Server running on http://localhost:${env.port} 🚀`)
 })
