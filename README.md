@@ -71,7 +71,7 @@ This will start the backend server, and you can access the API at `http://localh
 ## Running the script
 To run the script and create the users on your hubspot application, you will need to make a GET request to the following endpoint:
 
-/contacts/create-many
+http://localhost:ENV_PORT/contacts/create-many
 
 For that, you can use a REST client like [Postman](https://www.postman.com/) or [Insomnia](https://insomnia.rest/download), or you can simply access [the following link](http://localhost:3001/contacts/create-many), after the server is started.
 
