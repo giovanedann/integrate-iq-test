@@ -77,4 +77,4 @@ For that, you can use a REST client like [Postman](https://www.postman.com/) or 
 
 ## Considerations
 Controllers, services, and extra layers were not used in this project due to the context of the application (only 1 endpoint).
-I kept it simple, with all centered on the index file, to avoid middlemans and things like that on the application.
+I kept it simple, with all centered on the index file, to avoid middlemans and stuff like that on the application.
