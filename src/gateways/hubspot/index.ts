@@ -3,13 +3,11 @@ import { BatchInputSimplePublicObjectInputForCreate } from '@hubspot/api-client/
 
 import { env } from '../../config/env'
 import { IHubspotGateway } from '../../domain/gateways/hubspot/HubspotGateway.interface';
-import { AwsContact, IAwsGateway } from '../../domain/gateways/aws/AwsGateway.interface';
+import { AwsContact } from '../../domain/gateways/aws/AwsGateway.interface';
 import { chunkArray } from '../../helpers/chunkArray';
 import { ContactExistError } from '../../errors/ContactExistError';
 
 export class HubspotGateway implements IHubspotGateway {
-  constructor(private readonly awsGateway: IAwsGateway) { }
-
   private readonly accessToken = env.hubspotAccessToken
   private readonly client = new Client({ accessToken: this.accessToken })
 
