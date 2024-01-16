@@ -1,4 +1,5 @@
 import { BatchResponseSimplePublicObject, BatchResponseSimplePublicObjectWithErrors } from "@hubspot/api-client/lib/codegen/crm/contacts"
+import { AwsContact } from "../aws/AwsGateway.interface"
 
 export interface HubspotContact {
   id: number
@@ -10,5 +11,5 @@ export interface HubspotContact {
 }
 
 export interface IHubspotGateway {
-  createBatchContacts: () => Promise<BatchResponseSimplePublicObject | BatchResponseSimplePublicObjectWithErrors>
+  createBatchContacts: (contacts: AwsContact[]) => Promise<void>
 }
