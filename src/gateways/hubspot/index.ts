@@ -17,10 +17,9 @@ export class HubspotGateway implements IHubspotGateway {
       await Promise.all(chunkedArray.map((contacts) => {
         const { contactsWithoutEmail } = this.filterUnregisteredContacts(contacts);
 
-        const mappedUnregisteredContacts: BatchInputSimplePublicObjectInputForCreate = {
+        const mappedContactsWithoutEmail: BatchInputSimplePublicObjectInputForCreate = {
           inputs: contactsWithoutEmail.map((awsContact) => ({
             properties: {
-              email: awsContact.email,
               firstname: awsContact.first_name,
               company: "Integrate IQ",
               website: "https://integrateiq.com/",
@@ -31,7 +30,7 @@ export class HubspotGateway implements IHubspotGateway {
           }))
         }
 
-        return this.client.crm.contacts.batchApi.create(mappedUnregisteredContacts);
+        return this.client.crm.contacts.batchApi.create(mappedContactsWithoutEmail);
       }))
     } catch (error) {
       // If this catches an error, means that the batch API throwed an error because some e-mail have already been registered
@@ -56,9 +55,12 @@ export class HubspotGateway implements IHubspotGateway {
 
     await fetch(`https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/${contact.email}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${env.hubspotAccessToken}`
+      },
       body: JSON.stringify(body)
-    })
+    });
   }
 
   private filterUnregisteredContacts(contacts: AwsContact[]) {
