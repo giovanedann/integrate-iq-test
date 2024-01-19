@@ -13,32 +13,30 @@ export class HubspotGateway implements IHubspotGateway {
   async createBatchContacts(contacts: AwsContact[]) {
     const chunkedArray = chunkArray(contacts, 100);
     
-    try {
-      await Promise.all(chunkedArray.map((contacts) => {
-        const { contactsWithoutEmail } = this.filterUnregisteredContacts(contacts);
+    // Using the batch api just to register contacts that does not have an e-mail
+    await Promise.all(chunkedArray.map((contacts) => {
+      const { contactsWithoutEmail } = this.filterUnregisteredContacts(contacts);
 
-        const mappedContactsWithoutEmail: BatchInputSimplePublicObjectInputForCreate = {
-          inputs: contactsWithoutEmail.map((awsContact) => ({
-            properties: {
-              firstname: awsContact.first_name,
-              company: "Integrate IQ",
-              website: "https://integrateiq.com/",
-              lastname: awsContact.last_name,
-              phone: awsContact.phone_number
-            },
-            associations: []
-          }))
-        }
-
-        return this.client.crm.contacts.batchApi.create(mappedContactsWithoutEmail);
-      }))
-    } catch (error) {
-      // If this catches an error, means that the batch API throwed an error because some e-mail have already been registered
-      for (const contacts of chunkedArray) {
-        const { contactsWithEmail } = this.filterUnregisteredContacts(contacts)
-
-        await Promise.all(contactsWithEmail.map((contact) => this.upsertContact(contact)))
+      const mappedContactsWithoutEmail: BatchInputSimplePublicObjectInputForCreate = {
+        inputs: contactsWithoutEmail.map((awsContact) => ({
+          properties: {
+            firstname: awsContact.first_name,
+            company: "Integrate IQ",
+            website: "https://integrateiq.com/",
+            lastname: awsContact.last_name,
+            phone: awsContact.phone_number
+          },
+          associations: []
+        }))
       }
+
+      return this.client.crm.contacts.batchApi.create(mappedContactsWithoutEmail);
+    }))
+    
+    // Using the legacy upsert createOrUpdate API to update contacts that already have an e-mail
+    for (const contacts of chunkedArray) {
+      const { contactsWithEmail } = this.filterUnregisteredContacts(contacts)
+      await Promise.all(contactsWithEmail.map((contact) => this.upsertContact(contact)))
     }
   }
 
